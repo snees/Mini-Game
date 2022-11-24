@@ -403,9 +403,10 @@ record.addEventListener("click", ()=>{
 });
 
 scoreSave.addEventListener("click", ()=>{
+    console.log(inputUserId.value.length);
     if(inputUserId.value != ""){
         let regID = /^[가-힣a-zA-Z1-9 ]+$/;
-        if(!regID.test(inputUserId.value) || inputUserId.value < 3){
+        if(!regID.test(inputUserId.value) || inputUserId.value.length < 3){
             console.log(inputUserId.value);
             inputUserId.value="아이디는 3자 이상의 한글, 영문, 숫자로만 입력가능합니다.";
             inputUserId.style.color = "#FFA7A7";
@@ -413,7 +414,7 @@ scoreSave.addEventListener("click", ()=>{
             $.post("http://121.174.117.167/20191735/ajax.DBsave.php", {
                 game : "tetris",
                 userid : inputUserId.value,
-                score : totalScore.innerHTML
+                score : totalScore.innerHTML.split(" ")[2]
             }, function(data){
                 if(data.SQL){
                     modalClose.click();
