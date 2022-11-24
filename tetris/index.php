@@ -17,9 +17,28 @@
         <button type="button" id="startBtn" class="startBtn">Start</button>
     </div>
 </div>
-<div class="score">0</div>
-<div class="map">
-    <ul></ul>
+<div class="manual hidden">
+    <ul>
+        <li class="ko"> 기본 방향 키로 좌우, 아래로 움직일 수 있습니다.</li>
+        <li class="ko"> 윗쪽 방향 키 또는 'Z'키로 블록의 모양을 변경할 수 있습니다.</li>
+        <li class="ko"> 'C'키를 사용하여 현재 블록을 잠시 보류해둘 수 있습니다.</li>
+        <li class="ko"> 'ESC'키를 사용하여 게임을 잠시 중단 가능합니다.</li>
+    </ul>
+</div>
+<div class="tetrisHeader d-flex">
+    <span class="hidden">hold</span>
+    <div class="score">Score : 0</div>
+    <div class="infoDiv hidden">
+        <!-- <button type="button" class="infoBtn"><img src="./infoIcon.png" class="infoIcon"></img></button> -->
+    </div>
+</div>
+<div class="tetrisBdoy d-flex">
+    <div class="hold">
+        <ul></ul>
+    </div>
+    <div class="map d-flex">
+        <ul></ul>
+    </div>
 </div>
 <div class="gameover" id="gameover">
     <div class="title d-flex">

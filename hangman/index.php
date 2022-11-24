@@ -3,17 +3,19 @@
 ?>
 <script>
     $(document).prop('title', 'HANG MAN');
-    var word = "";
     var len;
     var cnt;
+    var word;
+    var translate;
     
     $(document).ready(function(){
 
         /* 시작 버튼 */
         $("#startBtn").on("click", function(){
-
+            // keyEvent();
             $.post("./word.php",function(data){
-                word = data;
+                word = data.word;
+                translate = data.translate;
                 cnt = word.length + 5;
 
                 $("#startBtn").hide();
@@ -27,10 +29,8 @@
 
                 len = word.length;
 
-
                 var wordDiv = [];
                 
-
                 for(var i=0; i<len; i++){
                     wordDiv[i] = "<input type='text' class='word' id='word"+[i]+"' disabled='true' value='*'>";
                     wordDiv[i] += "<input type='hidden' class='word' id='hidden"+[i]+"' disabled='true' value='"+word.charAt(i)+"' style='display:none;'>";
@@ -38,13 +38,16 @@
                     $(".game").append(wordDiv[i]);
                 } 
 
-            });
+            }, "json");
         });
 
         /* 실패 후 재시작 */
         $(".RestartBtn").on("click",function(){
+            // keyEvent();
+            $(".showWord").empty();
             $.post("./word.php",function(data){
-                word = data;
+                word = data.word;
+                translate = data.translate;
                 cnt = word.length + 5;
 
                 $("#gamestart").show();
@@ -70,22 +73,26 @@
                     $(".alpha").css("cursor", "pointer");
                 }
 
-            });
+            }, "json");
 
         });
 
+    });
+    $(document).on("click", ".wordTranslate", function(){
+        $(".showWord").append("<h2 class='ko'>"+translate+"</h2>");
     });
 
     /* 알파벳 버튼 */
     function alpha(alphabet){
 
-        if($("#count").val() == 1){
+        // console.log(cnt);
+        if(cnt == 1){
             $("#gamestart").hide();
             $("#gameover").css("display","flex");
             $(".RestartBtn").show();
-            $("#showWord").empty();
-            $("#showWord").append("<h1>! ANSWER !</h1>");
-            $("#showWord").append("<h2>"+word+"</h2>");
+            $(".showWord").empty();
+            $(".showWord").append("<h1>! ANSWER !</h1>");
+            $(".showWord").append("<h2><button type='button' class='wordTranslate'>"+word+"</button></h2>");
         }else{
             $("#count").val(--cnt);
             $("."+alphabet).attr("disabled", true);
@@ -98,11 +105,38 @@
                     $("#word"+[i]).css("color", "white");
                     if(len-- == 1){
                         $(".enBtn").hide();
+                        $(".game").hide();
+                        $(".showWord").empty();
+                        $(".showWord").append("<h2><button type='button' class='wordTranslate'>"+word+"</button></h2>");
                     }
                 }
             }
         }
     }
+
+    function keyEvent(){
+        // var keyboard = [65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90];
+        // /* 알파벳 키보드 */
+        // $(document).keydown(function(e){
+        //     if(65 <= e.keyCode && e.keyCode <=90){
+        //         console.log(e.key);
+
+        //         var idx = keyboard.indexOf(e.keyCode);
+        //         if(idx != -1){
+        //             alpha((e.key).toUpperCase());
+        //             keyboard.splice(idx,1);
+        //             for(var i=65; i<=90; i++){
+        //                 if(e.keyCode == i){
+        //                     e.preventDefault();
+        //                     e.returnValue=false;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // })
+
+    }
+    
     
 </script>
     <div class="gamestart" id="gamestart">
@@ -111,6 +145,8 @@
             <input type="hidden" id="wordInput"/>
         </div>
         <div class="game d-flex"></div>
+        <div class="showWord">
+        </div>
         <div class="answer d-flex"></div>
         <div class="enBtn">
             <div><input type="text" id="count" disabled></div>
@@ -154,7 +190,7 @@
         <div class="title d-flex">
             <h1>GAME OVER</h1>
         </div>
-        <div id="showWord">
+        <div class="showWord">
         </div>
         <div class="btnDiv d-flex">
             <button type="button" class="RestartBtn">Restart</button>

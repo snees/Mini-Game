@@ -12,7 +12,7 @@ body {
 }
 ul li {
     list-style-type: none;
-    font-family: 'Shadows Into Light', cursive;
+    font-family: 'Covered By Your Grace', cursive;
     font-size: large;
 }
 .fleft {
@@ -41,8 +41,8 @@ a, a:active, a:hover {
     color: black;
 }
 .ko {
-    font-size: x-large;
-    font-family: 'Nanum Pen Script', cursive;
+    font-size: large;
+    font-family: 'Gaegu', cursive;
 }
 .justify-content-between {
     justify-content: space-between;
@@ -54,7 +54,7 @@ a, a:active, a:hover {
 }
 .gameStart {
     margin: 20rem 0 2rem 0;
-    font-family: 'Shadows Into Light', cursive;
+    font-family: 'Covered By Your Grace', cursive;
     font-size: xx-large;
 }
 span {
@@ -116,13 +116,21 @@ button:hover {
     display: flex;
     margin-top: 20%;
     justify-content: center;
-    font-family: 'Shadows Into Light', cursive;
+    font-family: 'Covered By Your Grace', cursive;
     font-size: -webkit-xxx-large;
     font-weight: bolder;
 }
 
 /* Tetris */
 
+.manual {
+    margin-top: 15%;
+}
+.manual > ul > li {
+    font-size: xx-large;
+    color: white;
+    text-align: center;
+}
 .gameOver{
     display: none;
     justify-content: center;
@@ -132,25 +140,67 @@ button:hover {
     height: 90%;
     background: #4C4C4C;
     left : 0;
-    top : 0;
+    top : 0;   
     color : white;
-    font-family: 'Shadows Into Light', cursive;
+    font-family: 'Covered By Your Grace', cursive;
     font-size: xxx-large;
+}
+.tetrisHeader > span {
+    margin: 0 13% 0 14%;
+    color: white;
+    font-family: 'Covered By Your Grace', cursive;
+    font-size: xx-large;
 }
 .score {
     display: none;
     text-align: center;
-    font-family: 'Shadows Into Light', cursive;
-    font-size: xxx-large;
-    margin: 2rem 0 0 0;
+    color: white;
+    font-family: 'Covered By Your Grace', cursive;
+    font-size: xx-large;
+    width: 350px;
+    text-align: left;
+}
+.infoDiv{
+    width: 15%;
+    margin: 0;
+    text-align: left;
+}
+.infoBtn, .infoBtn:hover{
+    background: none;
+    width: 0px;
+}
+.infoIcon{
+    width: 45px;
+    height: 25px;
+}
+.tetrisBdoy {
+    align-items: baseline;
+}
+.hold{
+    margin: 0 5% 0 0;
 }
 .map {
     display: none;
 }
+.hold > ul {
+    width : 175px;
+}
+.hold > ul > li{
+    width : 100%;
+    height :35px;
+}
+.hold > ul > li > ul{
+    display: flex;
+}
+.hold > ul > li > ul >li {
+    width : 35px;
+    height :35px;
+    outline : 1px solid #BDBDBD
+}
+
 .map > ul {
     border : 1px solid #BDBDBD;
     width : 350px;
-    margin: 0 auto;
 }
 .map > ul > li{
     width : 100%;
@@ -164,6 +214,8 @@ button:hover {
     height :35px;
     outline : 1px solid #BDBDBD
 }
+
+
 .tree {
     background: #FFA7A7;
 }
@@ -188,12 +240,12 @@ button:hover {
 
 /* HangMan */
 
-#showWord > h1, #showWord > h2{
+.showWord > h1, .showWord > h2{
     text-align: center;
     color : black;
     font-weight: bold;
 }
-#showWord > h2{
+.showWord > h2{
     font-size: x-large;
 }
 .btnDiv {
@@ -230,7 +282,7 @@ input {
 }
 .word{
     text-align: center;
-    font-family: 'Shadows Into Light', cursive;
+    font-family: 'Covered By Your Grace', cursive;
     font-weight: bolder;
     font-size: x-large;
     margin-right: 5px;
@@ -251,6 +303,11 @@ input:disabled{
     font-size: revert;
     color:white;
 }
+.wordTranslate, .wordTranslate:hover{
+    background: none;
+    color: black;
+}
+
 
 /* Memory */
 

@@ -11,6 +11,12 @@ const modal = document.querySelector(".modalBtn");
 const scoreSave = document.querySelector(".modalSaveBtn");
 const inputUserId = document.querySelector(".inputUserId");
 const modalClose = document.querySelector(".modalCloseBtn");
+const infoDiv = document.querySelector(".infoDiv");
+const infoBtn = document.querySelector(".infoBtn");
+const manual = document.querySelector(".manual");
+const hold = document.querySelector(".hold > ul");
+const holdtitle = document.querySelector(".tetrisHeader > span");
+
 
 /* Setting */
 const GAME_ROWS = 20;
@@ -22,6 +28,11 @@ let score = 0;
 let duration = 500;
 let downInteval;
 let tmpMovingItem;
+let holdBlock;
+let tmpBlock;
+let chgBlock;
+let isStop = false;
+let isChanged = false;
 
 const BLOCKS = {
     tree : [
@@ -37,10 +48,10 @@ const BLOCKS = {
         [[0,0], [0,1], [1, 0], [1, 1]]
     ],
     bar : [
-        [[1, 0], [2, 0], [3, 0], [4, 0]],
-        [[2, -1], [2, 0], [2, 1], [2, 2]],
-        [[1, 0], [2, 0], [3, 0], [4, 0]],
-        [[2, -1], [2,0], [2, 1], [2, 2]]
+        [[0, 0], [1, 0], [2, 0], [3, 0]],
+        [[1, -1], [1, 0], [1, 1], [1, 2]],
+        [[0, 0], [1, 0], [2, 0], [3, 0]],
+        [[1, -1], [1, 0], [1, 1], [1, 2]]
     ],
     zeeLeft : [
         [[0, 0], [1, 0], [1, 1], [2, 1]],
@@ -81,6 +92,16 @@ function init(){
     tmpMovingItem = {...movingItem}
     for(let i=0; i<GAME_ROWS; i++){
         prependLine();
+    }
+    for(let i=0; i<4; i++){
+        const li = document.createElement("li");
+        const ul = document.createElement("ul");
+        for(let j=0; j<5; j++){
+            const holdMatrix = document.createElement("li");
+            ul.prepend(holdMatrix);
+        }
+        li.prepend(ul);
+        hold.prepend(li);
     }
     generateNewBlock();
 }
@@ -155,7 +176,7 @@ function checkMatch(){
             child.remove();
             prependLine();
             score += 10;
-            totalScore.innerHTML = score;
+            totalScore.innerHTML = "Score : " +  score;
         }
     })
 
@@ -178,13 +199,15 @@ function generateNewBlock(){
     movingItem.left = 3;
     movingItem.direction = 0;
 
+    chgBlock = movingItem.type;
+
     tmpMovingItem = {...movingItem};
     renderBlocks();
 }
 
 function checkEmpty(target){
     if(!target ||  target.classList.contains("seized") ){
-        return false;
+        return false;zz
     }
     return true;
 }
@@ -205,42 +228,151 @@ function dropBlock(){
     }, 10);
 }
 
+function stopBlock(){
+    if(isStop) {
+        downInteval = setInterval(()=>{
+            moveBlock("top", 1);
+        }, duration);
+        isStop = false;
+    }else{
+        clearInterval(downInteval);
+        isStop = true;
+    }
+
+}
+
+function changeBlock(){
+
+    clearInterval(downInteval);
+    downInteval = setInterval(()=>{
+        moveBlock("top", 1);
+    }, duration)
+
+    holdBlock = movingItem.type;
+    const removeBlock = document.querySelectorAll(".moving");
+    removeBlock.forEach(block => {
+        block.classList.remove(holdBlock, "moving");
+    });
+
+    if(!isChanged){
+
+        const blockArray = Object.entries(BLOCKS);
+        const randomIndex = Math.floor(Math.random()*blockArray.length);
+
+        chgBlock = blockArray[randomIndex][0];
+
+        tmpBlock = holdBlock;
+        movingItem.type = chgBlock;
+        movingItem.top = 0;
+        movingItem.left = 3;
+        movingItem.direction = 0;
+    
+        tmpMovingItem = {...movingItem};
+        renderBlocks();
+        holdRenderBlock();
+        isChanged = true;
+
+    }else{
+        holdBlock = chgBlock;
+        chgBlock = tmpBlock;
+        tmpBlock = holdBlock;
+
+        movingItem.type = chgBlock;
+        movingItem.top = 0;
+        movingItem.left = 3;
+        movingItem.direction = 0;
+    
+        tmpMovingItem = {...movingItem};
+        renderBlocks();
+        holdRenderBlock();
+    }
+}
+
+function holdRenderBlock(){
+    const { type , direction, top, left} = tmpMovingItem;
+    console.log(type);
+    const holdremove = document.querySelectorAll(".holdBlock");
+    holdremove.forEach(block=>{
+        block.classList.remove("holdBlock",chgBlock);
+    })
+    BLOCKS[holdBlock][0].forEach(block=>{
+        console.log(block);
+        const x = block[0] + 1;
+        const y = block[1] + 1;
+        console.log({hold});
+        const target = hold.childNodes[y].childNodes[0].childNodes[x];
+        target.classList.add(holdBlock, "holdBlock");
+        
+    });
+    movingItem.left = left;
+    movingItem.top = top;
+    movingItem.direction = direction;
+}
 
 function GameOver(){
-    lScore.innerHTML="Score : " + totalScore.innerHTML;
+    lScore.innerHTML=totalScore.innerHTML;
     totalScore.style.display = "none";
     map.style.display= "none";
+    hold.classList.add("hidden");
     gameStatus.style.display="flex";
+    infoDiv.classList.add("hidden");
+    holdtitle.classList.add("hidden");
 }
+
+
 
 /* Event Handling */
 
 startBtn.addEventListener("click", () => {
-    document.querySelector(".map").style.display= "block";
-    totalScore.style.display="block";
-    restartBtn.style.display = "block";
+    
     startDiv.style.display="none";
-    map.innerHTML= "";
-    init();
+    manual.classList.remove("hidden");
+    setTimeout(()=>{
+        document.querySelector(".map").style.display= "flex";
+        totalScore.style.display="block";
+        restartBtn.style.display = "block";
+        manual.classList.add("hidden");
+
+        infoDiv.classList.remove("hidden");
+        holdtitle.classList.remove("hidden");
+        map.innerHTML= "";
+        init();
+    },3000);
+    
     
 })
 
 document.addEventListener("keydown", e=>{
     switch(e.keyCode){
         case 39 :
-            moveBlock("left", 1);
+            if(!isStop){
+                moveBlock("left", 1);
+            }
             break;
         case 37:
-            moveBlock("left", -1);
+            if(!isStop){
+                moveBlock("left", -1);
+            }
             break;
         case 40 :
-            moveBlock("top", 1);
+            if(!isStop){
+                moveBlock("top", 1);
+            }
+            break;
+        case 38 :
+            changeDirection();
             break;
         case 90 :
             changeDirection();
             break;
         case 32 :
             dropBlock();
+            break;
+        case 27 : 
+            stopBlock();
+            break;
+        case 67 : 
+            changeBlock();
             break;
         default :
             break;
@@ -251,13 +383,18 @@ restartBtn.addEventListener("click", ()=>{
     score = 0;
     map.innerHTML= "";
     map.style.display= "block";
+
+    hold.innerHTML="";
+    hold.classList.remove("hidden");
     
     lScore.innerHTML = "";
-    totalScore.innerHTML= "0";
+    totalScore.innerHTML= "Score : 0";
     totalScore.style.display = "block";
     
     gameStatus.style.display="none";
     record.classList.add("hidden");
+    infoDiv.classList.remove("hidden");
+    holdtitle.classList.remove("hidden");
     init();
 });
 
@@ -295,3 +432,11 @@ inputUserId.addEventListener("click", ()=>{
         inputUserId.style.color = "black";
         inputUserId.value="";
 });
+
+/* infoBtn.addEventListener("mouseover", (event)=>{
+    manual.classList.remove("hidden");
+});
+infoBtn.addEventListener("mouseout", (event)=>{
+    manual.classList.add("hidden");
+});
+ */
